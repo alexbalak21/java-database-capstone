@@ -1,6 +1,6 @@
 # User Stories — Smart Clinic Management System
 
-# User Story Template:
+# User Story Template
 
 **Title:**  
 _As a [user role], I want [feature/goal], so that [reason]._
@@ -16,17 +16,10 @@ _As a [user role], I want [feature/goal], so that [reason]._
 **Notes:**  
 - [Additional information or edge cases]
 
----
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
 
-# Admin User Stories
+## Admin User Stories
 
-## 1. Admin Login
+### 1. Admin Login
 **Title:**  
 _As an admin, I want to log into the portal with my username and password, so that I can manage the platform securely._
 
@@ -41,7 +34,7 @@ _As an admin, I want to log into the portal with my username and password, so th
 - Incorrect credentials should show an error message.
 
 
-## 2. Admin Logout
+### 2. Admin Logout
 **Title:**  
 _As an admin, I want to log out of the portal, so that I can protect system access._
 
@@ -56,7 +49,7 @@ _As an admin, I want to log out of the portal, so that I can protect system acce
 - Ensure token cannot be reused.
 
 
-## 3. Add Doctor
+### 3. Add Doctor
 **Title:**  
 _As an admin, I want to add doctors to the portal, so that they can access the system and manage appointments._
 
@@ -71,7 +64,7 @@ _As an admin, I want to add doctors to the portal, so that they can access the s
 - Email must be unique.
 
 
-## 4. Delete Doctor Profile
+### 4. Delete Doctor Profile
 **Title:**  
 _As an admin, I want to delete a doctor’s profile, so that I can remove inactive or incorrect accounts._
 
@@ -86,7 +79,7 @@ _As an admin, I want to delete a doctor’s profile, so that I can remove inacti
 - Consider soft delete vs hard delete.
 
 
-## 5. Run Stored Procedure for Monthly Appointments
+### 5. Run Stored Procedure for Monthly Appointments
 **Title:**  
 _As an admin, I want to run a stored procedure in MySQL CLI to get the number of appointments per month, so that I can track usage statistics._
 
@@ -101,9 +94,9 @@ _As an admin, I want to run a stored procedure in MySQL CLI to get the number of
 - Procedure may later be automated.
 
 
-# Exercise 3: Patient User Stories
+## Patient User Stories
 
-## 1. View Doctors Without Logging In
+### 1. View Doctors Without Logging In
 **Title:**  
 _As a patient, I want to view a list of doctors without logging in, so that I can explore options before registering._
 
@@ -118,7 +111,7 @@ _As a patient, I want to view a list of doctors without logging in, so that I ca
 - Cache results for performance.
 
 
-## 2. Patient Signup
+### 2. Patient Signup
 **Title:**  
 _As a patient, I want to sign up using my email and password, so that I can book appointments._
 
@@ -133,7 +126,7 @@ _As a patient, I want to sign up using my email and password, so that I can book
 - Password must be hashed.
 
 
-## 3. Patient Login
+### 3. Patient Login
 **Title:**  
 _As a patient, I want to log into the portal, so that I can manage my bookings._
 
@@ -148,7 +141,7 @@ _As a patient, I want to log into the portal, so that I can manage my bookings._
 - Show error for invalid login.
 
 
-## 4. Patient Logout
+### 4. Patient Logout
 **Title:**  
 _As a patient, I want to log out of the portal, so that I can secure my account._
 
@@ -163,7 +156,7 @@ _As a patient, I want to log out of the portal, so that I can secure my account.
 - Token must not be reusable.
 
 
-## 5. Book Appointment
+### 5. Book Appointment
 **Title:**  
 _As a patient, I want to book an hour-long appointment with a doctor, so that I can receive medical consultation._
 
@@ -178,7 +171,7 @@ _As a patient, I want to book an hour-long appointment with a doctor, so that I 
 - Prevent double-booking.
 
 
-## 6. View Upcoming Appointments
+### 6. View Upcoming Appointments
 **Title:**  
 _As a patient, I want to view my upcoming appointments, so that I can prepare accordingly._
 
@@ -193,9 +186,9 @@ _As a patient, I want to view my upcoming appointments, so that I can prepare ac
 - Sort by date.
 
 
-# Exercise 4: Doctor User Stories
+## Doctor User Stories
 
-## 1. Doctor Login
+### 1. Doctor Login
 **Title:**  
 _As a doctor, I want to log into the portal, so that I can manage my appointments._
 
@@ -210,7 +203,7 @@ _As a doctor, I want to log into the portal, so that I can manage my appointment
 - Use role-based access.
 
 
-## 2. Doctor Logout
+### 2. Doctor Logout
 **Title:**  
 _As a doctor, I want to log out of the portal, so that I can protect my data._
 
@@ -225,7 +218,7 @@ _As a doctor, I want to log out of the portal, so that I can protect my data._
 - Token invalidation required.
 
 
-## 3. View Appointment Calendar
+### 3. View Appointment Calendar
 **Title:**  
 _As a doctor, I want to view my appointment calendar, so that I can stay organized._
 
@@ -240,7 +233,7 @@ _As a doctor, I want to view my appointment calendar, so that I can stay organiz
 - Calendar UI optional for MVP.
 
 
-## 4. Mark Unavailability
+### 4. Mark Unavailability
 **Title:**  
 _As a doctor, I want to mark my unavailability, so that patients only see available slots._
 
@@ -255,7 +248,7 @@ _As a doctor, I want to mark my unavailability, so that patients only see availa
 - Prevent conflicts with existing appointments.
 
 
-## 5. Update Profile
+### 5. Update Profile
 **Title:**  
 _As a doctor, I want to update my profile with specialization and contact information, so that patients have up-to-date information._
 
@@ -270,7 +263,7 @@ _As a doctor, I want to update my profile with specialization and contact inform
 - Consider profile picture later.
 
 
-## 6. View Patient Details
+### 6. View Patient Details
 **Title:**  
 _As a doctor, I want to view patient details for upcoming appointments, so that I can be prepared._
 
