@@ -44,7 +44,7 @@ This Spring Boot application uses both MVC and REST controllers. Thymeleaf templ
    - The cycle repeats as the user navigates, schedules appointments, views records, or manages clinic data.
 
 
-# Sequence Diagram: Smart Clinic Management System  
+# Sequence Diagram (ASCII) — Smart Clinic Management System
 
 ```mermaid
 sequenceDiagram
@@ -64,14 +64,255 @@ sequenceDiagram
     SEC->>C: Forward Authorized Request
 
     C->>S: Invoke Service Method
-    S->>RDB: Query/Update Relational Data (Users, Doctors, Patients, Appointments)
-    RDB-->>S: Return Entities/Records
+    S->>RDB: Query/Update Relational Data
+    RDB-->>S: Return Entities
 
-    S->>MDB: Query/Update Prescriptions (if needed)
-    MDB-->>S: Return Document Data
+    S->>MDB: Query/Update Prescriptions
+    MDB-->>S: Return Documents
 
     S-->>C: Return Processed Data / DTOs
     C-->>FE: Return HTML (Thymeleaf) or JSON (REST)
     FE-->>U: Render Updated UI
 ```
 
+
+```
+                 Smart Clinic Management System - Sequence Diagram
+                 -------------------------------------------------
+
+ User
+  |
+  | 1. Access Dashboard / Appointment Page
+  v
++------------------+
+|   Frontend (UI)  |
++------------------+
+          |
+          | 2. Send HTTP Request with JWT
+          v
++---------------------------+
+| Spring Security (JWT)    |
+|  - Validate Token        |
+|  - Check Role            |
++---------------------------+
+          |
+          | 3. Forward Authorized Request
+          v
++---------------------------+
+|     Controller (MVC/REST) |
++---------------------------+
+          |
+          | 4. Call Service Layer
+          v
++---------------------------+
+|       Service Layer       |
+|  - Business Logic         |
+|  - Validation             |
++---------------------------+
+      /            \
+     /              \
+    v                v
++-----------+    +----------------+
+| MySQL DB  |    | MongoDB (Docs) |
+| (JPA Repo)|    | Prescriptions  |
++-----------+    +----------------+
+     |                |
+     | 5. Return Data |
+     \________________/
+          |
+          | 6. Return Processed Data (DTOs)
+          v
++---------------------------+
+|     Controller            |
++---------------------------+
+          |
+          | 7. Return HTML or JSON
+          v
++------------------+
+|   Frontend (UI)  |
++------------------+
+          |
+          | 8. Render Updated UI
+          v
+        User
+```
+
+
+# ASCII Component Diagram — Smart Clinic Management System
+
+```mermaid
+flowchart TB
+
+    %% Frontend Layer
+    subgraph FE["Frontend Layer"]
+        UI["HTML / CSS / JavaScript<br>Thymeleaf Views"]
+    end
+
+    %% Security Layer
+    subgraph SEC["Security Layer"]
+        JWT["JWT Authentication<br>Spring Security Filter Chain"]
+    end
+
+    %% Backend Layer
+    subgraph BE["Backend Layer - Spring Boot"]
+        C["Controllers<br>(MVC + REST)"]
+        S["Service Layer<br>Business Logic"]
+        V["Validators<br>Input & Entity Validation"]
+    end
+
+    %% Data Access Layer
+    subgraph DAL["Data Access Layer"]
+        JPA["Spring Data JPA<br>MySQL Repositories"]
+        MONGO["Spring Data MongoDB<br>Prescription Repo"]
+    end
+
+    %% Databases
+    subgraph DB["Databases"]
+        MYSQL["MySQL<br>Relational Data"]
+        MONGODB["MongoDB<br>Document Data"]
+    end
+
+    %% Connections
+    UI --> C
+    C --> SEC
+    SEC --> C
+
+    C --> S
+    S --> V
+
+    S --> JPA
+    S --> MONGO
+
+    JPA --> MYSQL
+    MONGO --> MONGODB
+```
+
+
+
+```
+                         +--------------------------------------+
+                         |        Frontend (UI Layer)           |
+                         |--------------------------------------|
+                         |  - HTML / CSS / JavaScript           |
+                         |  - Thymeleaf Templates               |
+                         +------------------+-------------------+
+                                            |
+                                            | HTTP Requests (JWT)
+                                            v
++----------------------------------------------------------------------------------+
+|                           Backend (Spring Boot Application)                      |
+|----------------------------------------------------------------------------------|
+|                                                                                  |
+|   +----------------------+        +----------------------+        +--------------+|
+|   |  Security Layer     |        |   Controllers        |        |  Validators  ||
+|   |----------------------|        |----------------------|        |--------------||
+|   | - JWT Filter        |<------>| - MVC Controllers    |<------>| - Input/DTO  ||
+|   | - Role Checking     |        | - REST Controllers   |        |   Validation ||
+|   +----------------------+        +----------------------+        +--------------+|
+|                 |                               |                           |
+|                 |                               v                           |
+|                 |                     +----------------------+              |
+|                 |                     |   Service Layer      |              |
+|                 |                     |----------------------|              |
+|                 |                     | - Business Logic     |              |
+|                 |                     | - Authorization      |              |
+|                 |                     +----------+-----------+              |
+|                 |                                |                          |
+|                 |                                |                          |
+|                 |                                v                          |
+|   +---------------------------+      +---------------------------+          |
+|   |  JPA Repository Layer     |      | MongoDB Repository Layer  |          |
+|   |---------------------------|      |---------------------------|          |
+|   | - Users / Doctors         |      | - Prescriptions           |          |
+|   | - Patients / Appointments |      | - Medical Documents       |          |
+|   +-------------+-------------+      +-------------+-------------+          |
+|                 |                                |                          |
++-----------------+--------------------------------+--------------------------+
+                  |                                |
+                  v                                v
+        +-------------------+            +----------------------+
+        |     MySQL DB      |            |     MongoDB          |
+        |-------------------|            |----------------------|
+        | Relational Data   |            | Document Data        |
+        | (Users, Doctors,  |            | (Prescriptions, etc) |
+        | Patients, Appts)  |            |                      |
+        +-------------------+            +----------------------+
+```
+
+
+# ASCII Architecture Overview — Smart Clinic Management System
+
+```
+                           SMART CLINIC MANAGEMENT SYSTEM
+                           =================================
+
+                                   +----------------+
+                                   |     Users      |
+                                   |----------------|
+                                   | Admin          |
+                                   | Doctor         |
+                                   | Patient        |
+                                   +--------+-------+
+                                            |
+                                            | HTTP Requests (JWT)
+                                            v
+
++--------------------------------------------------------------------------------------+
+|                               FRONTEND (Presentation Layer)                          |
+|--------------------------------------------------------------------------------------|
+|  - HTML / CSS / JavaScript                                                           |
+|  - Thymeleaf Templates                                                               |
+|  - Fetch API / AJAX                                                                  |
+|                                                                                      |
+|  Responsibilities:                                                                   |
+|   * Render dashboards and forms                                                      |
+|   * Send authenticated requests with JWT                                             |
+|   * Display data returned by backend                                                 |
++--------------------------------------+-----------------------------------------------+
+                                           |
+                                           | Routes / API Calls
+                                           v
+
++--------------------------------------------------------------------------------------+
+|                               BACKEND (Spring Boot)                                  |
+|--------------------------------------------------------------------------------------|
+|                                                                                      |
+|  +-----------------------+     +-----------------------+     +---------------------+ |
+|  |   Security Layer      |     |     Controllers       |     |     Validators      | |
+|  |-----------------------|     |-----------------------|     |---------------------| |
+|  | - JWT Auth Filter     |<--->| - MVC Controllers     |<--->| - Input Validation  | |
+|  | - Role Authorization  |     | - REST Controllers    |     | - DTO Validation    | |
+|  +-----------------------+     +-----------------------+     +---------------------+ |
+|                 |                             |                             |       |
+|                 |                             v                             |       |
+|                 |                   +-----------------------+                |       |
+|                 |                   |     Service Layer     |                |       |
+|                 |                   |-----------------------|                |       |
+|                 |                   | - Business Logic      |                |       |
+|                 |                   | - Orchestration       |                |       |
+|                 |                   +-----------+-----------+                |       |
+|                 |                               |                            |       |
+|                 |                               |                            |       |
+|                 |                               v                            |       |
+|  +-----------------------------+     +-----------------------------+          |       |
+|  |   JPA Repository Layer      |     | MongoDB Repository Layer    |          |       |
+|  |-----------------------------|     |-----------------------------|          |       |
+|  | - Users / Doctors           |     | - Prescriptions             |          |       |
+|  | - Patients / Appointments   |     | - Medical Documents         |          |       |
+|  +--------------+--------------+     +--------------+--------------+          |       |
+|                 |                               |                            |       |
++-----------------+-------------------------------+----------------------------+-------+
+                  |                               |
+                  v                               v
+
+        +------------------------+        +---------------------------+
+        |       MySQL DB         |        |         MongoDB           |
+        |------------------------|        |---------------------------|
+        | Relational Entities    |        | Document Collections      |
+        | - Users                |        | - Prescriptions           |
+        | - Doctors              |        | - Notes / History         |
+        | - Patients             |        |                           |
+        | - Appointments         |        |                           |
+        +------------------------+        +---------------------------+
+
+```
