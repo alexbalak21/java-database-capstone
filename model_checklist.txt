@@ -1,0 +1,18 @@
+
+1. In the Admin model, did you define the class as a JPA entity?
+2. In the Admin model, did you apply the required validation and JSON annotations to the fields?
+3. In the Admin model, did you add getters and setters to support future authentication or authorization features?
+4. In the Appointment model, did you establish proper relationships between entities?
+5. In the Appointment model, did you implement custom methods to support Ul display logic?
+5. In the Appointment model, did you implement custom methods to support UI display logic?
+6. In the Appointment model, did you validate appointment timing to prevent past scheduling?
+7. In the Doctor model, did you add detailed validations for fields?
+8. In the Doctor model, did you ensure the password field is WRITE_ONLY?
+9. Did you model the doctor's time availability using structured JPA techniques such as an @ElementCollection instead of a plain list of strings?
+10. In the Patient model, did you validate inputs to ensure clean and accurate patient data?
+11. In the Patient model, did you follow consistent design and annotation patterns?
+12. In the Patient model, did you prepare this model for use in authentication and reporting features?
+13. In the Prescription model, did you design a MongoDB-compatible class with strict validation?
+14. In the Prescription model, did you define a flexible schema using Spring Data MongoDB?
+15. In the Prescription model, did you include metadata relevant to prescriptions, while keeping doctor notes optional?
+16. Did you commit and push the file to GitHub successfully?
