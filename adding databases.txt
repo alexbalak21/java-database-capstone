@@ -1,0 +1,27 @@
+Tasks
+Start MySQL Database
+1.1. Use the IDE to create and start a MySQL instance.
+1.2. Launch the MySQL CLI to run SQL commands.
+
+Configure application.properties
+2.1. Define MySQL connection settings.
+2.2. Define MongoDB URI for Spring Boot integration.
+
+Create CMS Database
+3.1. Execute CREATE DATABASE cms; in the MySQL CLI.
+
+Run Spring Boot Application
+4.1. Navigate to the app directory and run: mvn spring-boot:run
+4.2. Validate that tables are automatically created in MySQL.
+
+Insert Sample Data
+5.1 Use the provided SQL scripts to insert data into:
+
+doctor
+doctor_available_times
+patient
+appointment
+admin (if applicable)
+Verify Table Creation and Data
+6.1. Run USE cms; and SHOW TABLES; to confirm tables.
+6.2. Optionally query data to verify insertions.
