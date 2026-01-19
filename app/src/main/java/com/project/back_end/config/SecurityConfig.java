@@ -55,6 +55,8 @@ public class SecurityConfig {
                         // Public endpoints (no authentication required)
                         .requestMatchers("/", "/index.html", "/assets/**", "/js/**", "/css/**", "/images/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/admin", "/admin/login", "/doctor/login", "/patient/login").permitAll()
+                        // Public patient signup
+                        .requestMatchers(HttpMethod.POST, "/patient").permitAll()
                         
                         // Dashboard pages (validated by controller, allow access)
                         .requestMatchers("/adminDashboard/**").permitAll()

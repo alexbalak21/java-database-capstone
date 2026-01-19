@@ -1,2 +1,58 @@
-### GET 
+### PATIENT REGISTRE REQUEST ###
+POST http://localhost:8100/patient 
+Content-Type: application/json
 
+{
+    "name": "Max Payne",
+    "email": "maxpayne@mail.com",
+    "phone": "5551232032",
+    "password": "password@456",
+    "age": 30,
+    "address": "123 Main St",
+    "gender": "male"
+}
+
+###CURL COMMAND###
+curl -X POST http://localhost:8100/patient -H "Content-Type: application/json" -d '{"name":"Max Payne","email":"maxpayne@mail.com","phone":"5551232032","password":"password@456","age":30,"address":"123 Main St","gender":"male"}'
+
+
+### PATIENT LOGIN REQUEST ###
+POST http://localhost:8100/patient/login
+Content-Type: application/json
+
+{
+    "identifier": "maxpayne@mail.com",
+    "password": "password@456"
+}
+
+
+### CURL COMMAND ###
+curl -X POST http://localhost:8100/patient/login -H "Content-Type: application/json" -d '{"identifier":"maxpayne@mail.com","password":"password@456"}'
+
+
+### PATIENT LOGIN WITH APPOINTMENTS ###
+POST http://localhost:8100/patient/login
+Content-Type: application/json
+
+{
+    "identifier": "jane.doe@example.com",
+    "password": "passJane1"
+}
+
+
+
+### GET PATIENT APPOINTMENTS REQUEST ###
+GET http://localhost:8100/patient/appointments?id=1
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqYW5lLmRvZUBleGFtcGxlLmNvbSIsImlhdCI6MTc2ODg1NjA4MCwiZXhwIjoxNzY5NDYwODgwfQ.3UM5ytBriZGZ5FJkkUcuogWSJ3o33-fveC32y--bLY4
+
+### CURL COMMAND ###
+curl -X GET "http://localhost:8100/patient/appointments?id=1" \
+  -H "Accept: application/json" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqYW5lLmRvZUBleGFtcGxlLmNvbSIsImlhdCI6MTc2ODg1NjA4MCwiZXhwIjoxNzY5NDYwODgwfQ.3UM5ytBriZGZ5FJkkUcuogWSJ3o33-fveC32y--bLY4"
+
+
+### GET DOCTOR FILTER BY SPECIALTY & TIME REQUEST ###
+### NEEDS TO BE ADMIN AUTHORIZED ###
+GET http://localhost:8100/doctor/filter?specialty=Cardiology&availableTime=2024-07-10T10:00
+Accept: application/json
