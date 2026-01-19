@@ -10,8 +10,8 @@ const DOCTOR_API = API_BASE_URL + '/doctor';
  */
 export async function getDoctors() {
   try {
-    // Use fetch() to send a GET request to the DOCTOR_API endpoint
-    const response = await fetch(DOCTOR_API);
+    // Use authorizedFetch() to send a GET request with JWT token in Authorization header
+    const response = await authorizedFetch(DOCTOR_API);
     
     // Convert the response to JSON
     const data = await response.json();
@@ -27,13 +27,13 @@ export async function getDoctors() {
 
 /**
  * Function: deleteDoctor
- * Purpose: Delete a specific doctor using their ID and an authentication token
+ * Purpose: Delete a specific doctor using their ID with authorization token in header
  */
 export async function deleteDoctor(doctorId, token) {
   try {
-    // Use fetch() with the DELETE method
-    // The URL includes the doctor ID and token as path parameters
-    const response = await fetch(`${DOCTOR_API}/${doctorId}/${token}`, {
+    // Use authorizedFetch() with the DELETE method
+    // Token is now passed in the Authorization header instead of the URL
+    const response = await authorizedFetch(`${DOCTOR_API}/${doctorId}`, {
       method: "DELETE"
     });
     
@@ -57,19 +57,17 @@ export async function deleteDoctor(doctorId, token) {
 
 /**
  * Function: saveDoctor
- * Purpose: Save (create) a new doctor using a POST request
+ * Purpose: Save (create) a new doctor using a POST request with authorization
  */
 export async function saveDoctor(doctor, token) {
   try {
-    // Use fetch() with the POST method
-    // URL includes the token in the path
-    const response = await fetch(`${DOCTOR_API}/${token}`, {
+    // Use authorizedFetch() with the POST method
+    // Token is passed in the Authorization header instead of the URL
+    const response = await authorizedFetch(DOCTOR_API, {
       method: "POST",
       headers: {
-        // Set headers to specify JSON content type
         "Content-Type": "application/json"
       },
-      // Convert the doctor object to JSON in the request body
       body: JSON.stringify(doctor)
     });
     
@@ -95,9 +93,15 @@ export async function saveDoctor(doctor, token) {
  */
 export async function filterDoctors(name, time, specialty) {
   try {
-    // Use fetch() with the GET method
-    // Include the name, time, and specialty as URL path parameters
-    const response = await fetch(`${DOCTOR_API}/${name}/${time}/${specialty}`, {
+    // Build query parameters from the filters
+    const params = new URLSearchParams();
+    if (name) params.append('name', name);
+    if (time) params.append('time', time);
+    if (specialty) params.append('specialty', specialty);
+    
+    // Use authorizedFetch() with the GET method and query parameters
+    const url = params.toString() ? `${DOCTOR_API}/filter?${params.toString()}` : DOCTOR_API;
+    const response = await authorizedFetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json"

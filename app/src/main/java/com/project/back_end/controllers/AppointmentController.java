@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -29,10 +31,29 @@ public class AppointmentController {
 		this.service = service;
 	}
 
-	@GetMapping("/{date}/{patientName}/{token}")
-	public ResponseEntity<?> getAppointments(@PathVariable String date,
-											 @PathVariable String patientName,
-											 @PathVariable String token) {
+	/**
+	 * Extract JWT token from Authorization header
+	 * Expected format: "Bearer <token>"
+	 */
+	private String extractTokenFromHeader(String authHeader) {
+		if (authHeader != null && authHeader.startsWith("Bearer ")) {
+			return authHeader.substring(7);
+		}
+		return null;
+	}
+
+	@GetMapping
+	public ResponseEntity<?> getAppointments(
+			@RequestHeader(value = "Authorization", required = false) String authHeader,
+			@RequestParam String date,
+			@RequestParam String patientName) {
+		
+		String token = extractTokenFromHeader(authHeader);
+		if (token == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body(Map.of("message", "Missing or invalid Authorization header"));
+		}
+
 		// validate token for doctor role
 		ResponseEntity<Map<String, String>> validation = service.validateToken(token, "doctor");
 		if (!validation.getStatusCode().is2xxSuccessful()) {
@@ -51,9 +72,17 @@ public class AppointmentController {
 		return ResponseEntity.ok(result);
 	}
 
-	@PostMapping("/{token}")
-	public ResponseEntity<Map<String, String>> bookAppointment(@PathVariable String token,
-															   @RequestBody Appointment appointment) {
+	@PostMapping
+	public ResponseEntity<Map<String, String>> bookAppointment(
+			@RequestHeader(value = "Authorization", required = false) String authHeader,
+			@RequestBody Appointment appointment) {
+		
+		String token = extractTokenFromHeader(authHeader);
+		if (token == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body(Map.of("message", "Missing or invalid Authorization header"));
+		}
+
 		ResponseEntity<Map<String, String>> validation = service.validateToken(token, "patient");
 		if (!validation.getStatusCode().is2xxSuccessful()) {
 			return validation;
@@ -79,9 +108,17 @@ public class AppointmentController {
 				.body(Map.of("message", "Error booking appointment"));
 	}
 
-	@PutMapping("/{token}")
-	public ResponseEntity<Map<String, String>> updateAppointment(@PathVariable String token,
-																 @RequestBody Appointment appointment) {
+	@PutMapping
+	public ResponseEntity<Map<String, String>> updateAppointment(
+			@RequestHeader(value = "Authorization", required = false) String authHeader,
+			@RequestBody Appointment appointment) {
+		
+		String token = extractTokenFromHeader(authHeader);
+		if (token == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body(Map.of("message", "Missing or invalid Authorization header"));
+		}
+
 		ResponseEntity<Map<String, String>> validation = service.validateToken(token, "patient");
 		if (!validation.getStatusCode().is2xxSuccessful()) {
 			return validation;
@@ -90,9 +127,17 @@ public class AppointmentController {
 		return appointmentService.updateAppointment(appointment);
 	}
 
-	@DeleteMapping("/{id}/{token}")
-	public ResponseEntity<Map<String, String>> cancelAppointment(@PathVariable long id,
-																 @PathVariable String token) {
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Map<String, String>> cancelAppointment(
+			@RequestHeader(value = "Authorization", required = false) String authHeader,
+			@PathVariable long id) {
+		
+		String token = extractTokenFromHeader(authHeader);
+		if (token == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+					.body(Map.of("message", "Missing or invalid Authorization header"));
+		}
+
 		ResponseEntity<Map<String, String>> validation = service.validateToken(token, "patient");
 		if (!validation.getStatusCode().is2xxSuccessful()) {
 			return validation;
