@@ -8,9 +8,9 @@ const DOCTOR_API = API_BASE_URL + '/doctor/login';
 
 // Use the window.onload event to ensure DOM elements are available after page load
 window.onload = function() {
-  // Select the "adminLogin" and "doctorLogin" buttons using getElementById
-  const adminBtn = document.getElementById("adminLogin");
-  const doctorBtn = document.getElementById("doctorLogin");
+  // Bind click handlers to the role buttons on the landing page
+  const adminBtn = document.getElementById("adminBtn");
+  const doctorBtn = document.getElementById("doctorBtn");
   
   // If the admin login button exists, add a click event listener
   if (adminBtn) {
