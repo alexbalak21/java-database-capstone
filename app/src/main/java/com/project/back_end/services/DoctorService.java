@@ -432,7 +432,8 @@ public class DoctorService {
 
             boolean matches = doctor.getAvailableTimes().stream().anyMatch(slot -> {
                 try {
-                    LocalTime time = LocalTime.parse(slot);
+                    String start = slot.contains("-") ? slot.split("-")[0].trim() : slot.trim();
+                    LocalTime time = LocalTime.parse(start);
                     return ("AM".equals(target) && time.isBefore(LocalTime.NOON))
                             || ("PM".equals(target) && !time.isBefore(LocalTime.NOON));
                 } catch (Exception e) {

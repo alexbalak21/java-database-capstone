@@ -69,12 +69,14 @@ async function filterDoctorsOnChange() {
     
     // If doctors are found, render them using createDoctorCard()
     if (doctors.length > 0) {
+      console.log("[adminDashboard] rendering", doctors.length, "doctors after filter");
       doctors.forEach(doctor => {
         const card = createDoctorCard(doctor);
         contentDiv.appendChild(card);
       });
     } else {
       // If no doctors match the filter, show a message
+      console.log("[adminDashboard] no doctors match current filters");
       contentDiv.innerHTML = "<p>No doctors found with the given filters.</p>";
     }
   } catch (error) {
