@@ -2,7 +2,7 @@
 import { API_BASE_URL } from "../config/config.js";
 
 // Define a constant DOCTOR_API to hold the full endpoint for doctor-related actions
-const DOCTOR_API = `${API_BASE_URL}/doctors`;
+const DOCTOR_API = API_BASE_URL + '/doctor';
 
 /**
  * Function: getDoctors

@@ -3,26 +3,26 @@ import { openModal } from "../components/modals.js";
 import { API_BASE_URL } from "../config/config.js";
 
 // Define constants for the admin and doctor login API endpoints using the base URL
-const ADMIN_API = `${API_BASE_URL}/admin/login`;
-const DOCTOR_API = `${API_BASE_URL}/doctor/login`;
+const ADMIN_API = API_BASE_URL + '/admin';
+const DOCTOR_API = API_BASE_URL + '/doctor/login';
 
 // Use the window.onload event to ensure DOM elements are available after page load
 window.onload = function() {
   // Select the "adminLogin" and "doctorLogin" buttons using getElementById
-  const adminLoginBtn = document.getElementById("adminBtn");
-  const doctorLoginBtn = document.getElementById("doctorBtn");
+  const adminBtn = document.getElementById("adminLogin");
+  const doctorBtn = document.getElementById("doctorLogin");
   
   // If the admin login button exists, add a click event listener
-  if (adminLoginBtn) {
-    adminLoginBtn.addEventListener("click", () => {
+  if (adminBtn) {
+    adminBtn.addEventListener("click", () => {
       // Call openModal('adminLogin') to show the admin login modal
       openModal('adminLogin');
     });
   }
   
   // If the doctor login button exists, add a click event listener
-  if (doctorLoginBtn) {
-    doctorLoginBtn.addEventListener("click", () => {
+  if (doctorBtn) {
+    doctorBtn.addEventListener("click", () => {
       // Call openModal('doctorLogin') to show the doctor login modal
       openModal('doctorLogin');
     });

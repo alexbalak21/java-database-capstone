@@ -134,3 +134,14 @@ window.loginPatient = async function () {
 
 
 }
+
+// Render utility function for rendering a list of doctors
+export function renderDoctorCards(doctors) {
+  const contentDiv = document.getElementById("content");
+  contentDiv.innerHTML = "";
+  
+  doctors.forEach(doctor => {
+    const card = createDoctorCard(doctor);
+    contentDiv.appendChild(card);
+  });
+}
