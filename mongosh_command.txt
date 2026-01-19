@@ -1,0 +1,1 @@
+mongosh "mongodb+srv://prescriptions.sgunutg.mongodb.net/" --apiVersion 1 --username alexbalak_db_user
