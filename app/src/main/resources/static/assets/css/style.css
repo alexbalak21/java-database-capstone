@@ -322,10 +322,6 @@
     padding: 10px;
     text-align: center;
   }
-
-  .card-actions:hover {
-    background-color: transparent;
-  }
   
   .card-actions button {
     background: transparent;

@@ -2,7 +2,6 @@
 
 /* Doctor Card Actions */
 .card-actions {
-  background-color: #333;
   color: white;
   text-align: center;
   padding: 1rem;
@@ -11,9 +10,7 @@
   transition: background-color 0.3s ease;
 }
 
-.card-actions:hover {
-  background-color: #222;
-}
+
 
 .card-actions button {
   background-color: #015c5d;
