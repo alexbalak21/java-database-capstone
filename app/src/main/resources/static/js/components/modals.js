@@ -40,8 +40,8 @@ export function openModal(type) {
   } else if (type === 'patientLogin') {
     modalContent = `
         <h2>Patient Login</h2>
-        <input type="text" id="email" placeholder="Email" class="input-field">
-        <input type="password" id="password" placeholder="Password" class="input-field">
+        <input type="text" id="email" placeholder="Email" class="input-field" value="jane.doe@example.com">
+        <input type="password" id="password" placeholder="Password" class="input-field" value="passJane1">
         <button class="dashboard-btn" id="loginBtn">Login</button>
       `;
   }
@@ -59,15 +59,15 @@ export function openModal(type) {
   } else if (type === 'adminLogin') {
     modalContent = `
         <h2>Admin Login</h2>
-        <input type="text" id="username" name="username" placeholder="Username" class="input-field">
-        <input type="password" id="password" name="password" placeholder="Password" class="input-field">
+        <input type="text" id="username" name="username" placeholder="Username" class="input-field" value="admin">
+        <input type="password" id="password" name="password" placeholder="Password" class="input-field" value="admin@1234">
         <button class="dashboard-btn" id="adminLoginBtn" >Login</button>
       `;
   } else if (type === 'doctorLogin') {
     modalContent = `
         <h2>Doctor Login</h2>
-        <input type="text" id="email" placeholder="Email" class="input-field">
-        <input type="password" id="password" placeholder="Password" class="input-field">
+        <input type="text" id="email" placeholder="Email" class="input-field" value="dr.adams@example.com">
+        <input type="password" id="password" placeholder="Password" class="input-field" value="pass12345">
         <button class="dashboard-btn" id="doctorLoginBtn" >Login</button>
       `;
   }

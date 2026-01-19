@@ -71,10 +71,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/admin/**").hasRole("ADMIN")
                         
-                        // Doctor endpoints (require DOCTOR role)
-                        .requestMatchers(HttpMethod.GET, "/doctor/**").hasRole("DOCTOR")
-                        .requestMatchers(HttpMethod.POST, "/doctor/**").hasRole("DOCTOR")
-                        .requestMatchers(HttpMethod.PUT, "/doctor/**").hasRole("DOCTOR")
+                        // Doctor endpoints: allow listing/filtering to admins/patients; restrict mutations to admin
+                        .requestMatchers(HttpMethod.GET, "/doctor").hasAnyRole("ADMIN", "PATIENT", "DOCTOR")
+                        .requestMatchers(HttpMethod.GET, "/doctor/filter").hasAnyRole("ADMIN", "PATIENT", "DOCTOR")
+                        .requestMatchers(HttpMethod.GET, "/doctor/availability/**").hasAnyRole("PATIENT", "DOCTOR")
+                        .requestMatchers(HttpMethod.POST, "/doctor").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/doctor").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/doctor/**").hasRole("ADMIN")
                         
                         // Patient endpoints (require PATIENT role)
                         .requestMatchers(HttpMethod.GET, "/patient/**").hasRole("PATIENT")

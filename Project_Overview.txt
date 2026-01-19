@@ -1,0 +1,115 @@
+Capstone Project Overview
+Welcome to this course, Java Development Capstone Project. In this course, you’ll develop core application components for a project that involves building secure microservices, integrating relational and NoSQL databases, developing a functional frontend, containerizing the application, and setting up CI/CD pipelines. In this project, you will work on a scenario to build a Smart Clinic Management System.
+
+Project Scenario
+Imagine you’ve just joined SmartCare Solutions, a fast-growing digital health startup dedicated to transforming outpatient clinic operations with modern software. Several small and mid-sized clinics still rely on spreadsheets or outdated tools to manage appointments, patient records, and administrative tasks. By developing an intuitive online portal that empowers doctors and patients to manage schedules and health information seamlessly, SmartCare aims to gain a strong competitive edge in the healthcare tech space.
+
+As their newly hired full-stack developer, you’re tasked with designing and implementing a robust, secure, and scalable Smart Clinic Management System from scratch. This includes both the frontend (built using HTML, CSS, and JavaScript) and the backend (developed in Java with Spring Boot). You will also design the databases, implement APIs, handle authentication, and deploy the final application in a containerized environment with continuous integration to ensure quality code gets committed into the repository.
+
+Additionally, you will gather requirements, define system architecture, design relational and document databases, and implement key modules such as user management, appointment scheduling, medical history tracking, and role-based access control.
+
+Your mission is to:  
+
+Analyze and list multiple user roles (admin, doctor, patient) and define respective user stories.
+
+Identify role-specific permissions and restrictions
+
+Develop RESTful APIs for each core resource (Doctors, Patients, Appointments, Prescriptions)
+
+Perform integration, allowing CRUD operations through RESTful APIs.
+
+Design the structured (MySQL) and unstructured (NoSQL) data to store relational data such as patients, doctors, admin, and appointments in MySQL, and store flexible data such as prescriptions in MongoDB.
+
+Deploy the app using Docker and CI workflows to run tests, check APIs, scan for security issues, and ensure it builds correctly.
+
+Document the files and carry out version control through GitHub.
+
+Capstone project: Phases and tasks to be completed  
+The Java Development Capstone Project comprises six modules. Modules 1 to 5 contain multiple labs that guide you through planning, database design, deployment, and reflection. You’ll develop your Smart Clinic Management System by completing these labs at each phase. Save your work after each lab and compile it into a Markdown file to be pushed to a GitHub repository. Make sure to include links to all your exercises from Modules 1 to 5. These links or code files will need to be submitted as your Final Submission in Module 6. 
+
+Module 1: Project Overview and Requirements Gathering
+You’ll begin by understanding the capstone structure and real-world context. Then, you’ll define the technical architecture, identify microservices, and create user stories in GitHub for a Smart Clinic Management System.
+
+Tasks to be completed
+
+Creating Architecture Design Document
+
+Creating User Stories 
+
+Module 2: Database Designs and JPA Models 
+You’ll design both relational (MySQL) and document-based (NoSQL) schemas. Then you’ll create model classes with proper JPA annotations, validations, and entity relationships. 
+
+Tasks to be completed
+
+Designing the Database 
+
+Building Models with Validations
+
+Module 3: Sample Data and Stored Procedures
+You’ll insert sample records (admins, doctors, patients, appointments) and write stored procedures to support common reporting or query operations.
+
+Tasks to be completed
+
+Adding Databases and Tables 
+
+Adding Stored Procedures
+
+Module 4: Frontend and MVC
+You’ll build HTML/CSS/JS pages for admin dashboards, login, and data lists. Then, you’ll integrate them with your backend using an MVC architecture and add JWT authentication.
+
+Tasks to be completed
+
+Creating Frontend Pages 
+
+Developing Services and Utilities
+
+Creating MVC for Login
+
+Here is a sample output:
+
+
+
+
+
+
+Module 5: Containerization and Deployment
+This module focuses on building and exposing backend services, handling data with repositories and services, and creating REST endpoints for frontend consumption. Additionally, you’ll containerize both your frontend and backend using Docker. You’ll also configure GitHub Actions to run basic CI workflows such as linting and testing.
+
+Tasks to be completed
+
+Creating REST Endpoints  
+
+Containerizing Spring Boot Application with Docker
+
+Adding GitHub CI Workflows and Actions
+
+Module 6: Final Submission and Course Wrap-Up
+You’ll submit your saved final code and GitHub links. You’ll reflect on the development and deployment journey.
+
+Final outcome 
+
+By the end of this Capstone project, you will have successfully created a Smart Clinic Management System.
+
+Checklists, Grading, and Deliverables
+
+Each lesson includes a practice checklist to help you verify that you’ve completed all tasks correctly, from writing a model class or query method to testing your frontend.
+
+Your final grade will be based on:
+
+Functional backend and frontend implementation
+
+Proper use of JPA validations and the MVC framework
+
+Use of JWT for secure authentication
+
+Structured and validated database schemas
+
+Integration of stored procedures and sample data
+
+Best practices for Docker files
+
+CI actions to perform linting and testing
+
+Clear documentation and working GitHub repo
+
+In Module 6, you’ll submit the GitHub links as deliverables for the Final Submission and grading. The completion of this Capstone course depends on the deliverables you’ll be submitting in the Final module.

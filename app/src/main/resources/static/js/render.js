@@ -4,22 +4,12 @@ function selectRole(role) {
   setRole(role);
   const token = localStorage.getItem('token');
   if (role === "admin") {
-    if (token) {
-      window.location.href = `/adminDashboard/${token}`;
-    }
+    window.location.href = "/adminDashboard";
   } else if (role === "patient") {
-    if (token) {
-      window.location.href = `/patientDashboard/${token}`;
-    } else {
-      // No token, redirect to patient login page
-      window.location.href = "/pages/patientDashboard.html";
-    }
+    // No token, redirect to patient login page
+    window.location.href = "/pages/patientDashboard.html";
   } else if (role === "doctor") {
-    if (token) {
-      window.location.href = `/doctorDashboard/${token}`;
-    } else if (role === "loggedPatient") {
-      window.location.href = "loggedPatientDashboard.html";
-    }
+    window.location.href = "/doctorDashboard";
   }
 }
 

@@ -24,6 +24,12 @@ public class DashboardController {
         return "redirect:http://localhost:8080";
     }
 
+    @GetMapping("/adminDashboard")
+    public String adminDashboardPlain() {
+        // Token validation is handled by API calls from the page via Authorization headers.
+        return "admin/adminDashboard";
+    }
+
     @GetMapping("/doctorDashboard/{token}")
     public String doctorDashboard(@PathVariable String token) {
         ResponseEntity<Map<String, String>> validation = service.validateToken(token, "doctor");
@@ -32,6 +38,12 @@ public class DashboardController {
             return "doctor/doctorDashboard";
         }
         return "redirect:http://localhost:8080";
+    }
+
+    @GetMapping("/doctorDashboard")
+    public String doctorDashboardPlain() {
+        // Token validation is handled by API calls from the page via Authorization headers.
+        return "doctor/doctorDashboard";
     }
 
 }

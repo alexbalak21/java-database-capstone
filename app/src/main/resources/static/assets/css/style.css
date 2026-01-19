@@ -289,25 +289,29 @@
   }
   
   .card-actions {
-    background-color: #e28282;
+    background-color: transparent;
     padding: 10px;
     text-align: center;
   }
 
   .card-actions:hover {
-    background-color: #d26969;
+    background-color: transparent;
   }
   
   .card-actions button {
     background: transparent;
-    border: none;
-    color: #fff;
+    border: 1px solid #015c5d;
+    color: #015c5d;
     font-weight: bold;
     cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
   
   .card-actions button:hover {
     color: #fff;
+    background-color: #015c5d;
     border-color: #015c5d;
   }
   
