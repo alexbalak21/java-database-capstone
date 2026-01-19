@@ -1,7 +1,164 @@
 package com.project.back_end.services;
 
+import com.project.back_end.exceptions.InvalidTokenException;
+import com.project.back_end.exceptions.TokenExpiredException;
+import com.project.back_end.repo.AdminRepository;
+import com.project.back_end.repo.DoctorRepository;
+import com.project.back_end.repo.PatientRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
+import java.util.Date;
+
+/**
+ * TokenService handles JWT token generation, validation, and extraction of user information.
+ * 
+ * Features:
+ * - Generates JWT tokens with expiration
+ * - Validates tokens for authenticity and expiration
+ * - Extracts email from tokens
+ * - Validates tokens based on user role (admin, doctor, patient)
+ * - Handles token expiration and invalid token scenarios
+ */
+@Component
 public class TokenService {
-// 1. **@Component Annotation**
+
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    @Value("${jwt.expiration:604800000}") // 7 days default
+    private long jwtExpiration;
+
+    @Autowired
+    private AdminRepository adminRepository;
+
+    @Autowired
+    private DoctorRepository doctorRepository;
+
+    @Autowired
+    private PatientRepository patientRepository;
+
+    /**
+     * Retrieves the HMAC SHA signing key from the JWT secret.
+     * This key is used to sign and verify JWT tokens.
+     */
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
+    }
+
+    /**
+     * Generates a JWT token for a user based on their email.
+     * 
+     * @param email The user's email (used as the token subject)
+     * @return The generated JWT token as a String
+     */
+    public String generateToken(String email) {
+        return Jwts.builder()
+                .subject(email)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+    /**
+     * Extracts the email (subject) from a JWT token.
+     * 
+     * @param token The JWT token
+     * @return The email extracted from the token
+     * @throws TokenExpiredException if the token has expired
+     * @throws InvalidTokenException if the token is invalid or malformed
+     */
+    public String extractEmail(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claims.getSubject();
+        } catch (ExpiredJwtException e) {
+            throw new TokenExpiredException("Token has expired", e);
+        } catch (Exception e) {
+            throw new InvalidTokenException("Invalid token: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Checks if a token has expired without throwing exceptions.
+     * Useful for checks that don't require exception handling.
+     * 
+     * @param token The JWT token
+     * @return true if the token is expired, false otherwise
+     */
+    public boolean isTokenExpired(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claims.getExpiration().before(new Date());
+        } catch (ExpiredJwtException e) {
+            return true;
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
+    /**
+     * Validates a JWT token for a specific user role.
+     * Checks both token validity and user existence in the appropriate repository.
+     * 
+     * @param token The JWT token
+     * @param role The user role (admin, doctor, or patient)
+     * @return true if the token is valid and the user exists for the given role, false otherwise
+     */
+    public boolean validateToken(String token, String role) {
+        try {
+            String email = extractEmail(token);
+            
+            switch (role.toLowerCase()) {
+                case "admin":
+                    return adminRepository.findByUsername(email).isPresent();
+                case "doctor":
+                    return doctorRepository.findByEmail(email).isPresent();
+                case "patient":
+                    return patientRepository.findByEmail(email).isPresent();
+                default:
+                    return false;
+            }
+        } catch (TokenExpiredException | InvalidTokenException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Gets the remaining validity time of a token in milliseconds.
+     * 
+     * @param token The JWT token
+     * @return Remaining milliseconds until expiration, or -1 if already expired
+     */
+    public long getTokenRemainingTime(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            long remainingTime = claims.getExpiration().getTime() - System.currentTimeMillis();
+            return Math.max(remainingTime, -1);
+        } catch (Exception e) {
+            return -1;
+        }
+}
+
 // The @Component annotation marks this class as a Spring component, meaning Spring will manage it as a bean within its application context.
 // This allows the class to be injected into other Spring-managed components (like services or controllers) where it's needed.
 
