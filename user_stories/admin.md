@@ -1,4 +1,3 @@
-# Admin User Stories
 
 ## 1. Admin Login
 **Title:**  
@@ -44,8 +43,22 @@ _As an admin, I want to add doctors to the portal, so that they can access the s
 **Notes:**  
 - Email must be unique.
 
+## 4. Update Doctor
+**Title:**  
+_As an admin, I want to add doctors to the portal, so that they can access the system and manage appointments._
 
-## 4. Delete Doctor Profile
+**Acceptance Criteria:**  
+1. Admin can fill out doctor details.  
+2. System validates required fields.  
+3. Doctor account is created and stored in the database.  
+
+**Priority:** High  
+**Story Points:** 5  
+**Notes:**  
+- Email must be unique.
+
+
+## 5. Delete Doctor Profile
 **Title:**  
 _As an admin, I want to delete a doctor’s profile, so that I can remove inactive or incorrect accounts._
 
@@ -60,7 +73,7 @@ _As an admin, I want to delete a doctor’s profile, so that I can remove inacti
 - Consider soft delete vs hard delete.
 
 
-## 5. Run Stored Procedure for Monthly Appointments
+## 6. Run Stored Procedure for Monthly Appointments
 **Title:**  
 _As an admin, I want to run a stored procedure in MySQL CLI to get the number of appointments per month, so that I can track usage statistics._
 
