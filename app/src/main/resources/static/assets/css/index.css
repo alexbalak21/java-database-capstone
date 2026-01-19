@@ -74,6 +74,7 @@ h2 {
 }
 
 /* Modal Styles */
+
 .modal {
   display: none;
   position: fixed;
@@ -91,7 +92,7 @@ h2 {
   align-items: center;
 }
 
-#modal-body {
+.modal-content {
   background-color: white;
   padding: 2rem;
   border-radius: 8px;
