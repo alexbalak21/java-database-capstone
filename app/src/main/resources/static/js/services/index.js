@@ -52,7 +52,8 @@ window.loginPatient = async function() {
       return;
     }
 
-    const data = { email, password };
+    // Login DTO expects 'identifier' field, not 'email'
+    const data = { identifier: email, password };
     const response = await patientLogin(data);
 
     if (response.ok) {

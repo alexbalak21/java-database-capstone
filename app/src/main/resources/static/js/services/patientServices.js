@@ -28,6 +28,7 @@ export async function patientSignup(data) {
 }
 
 //For logging in patient
+// data should have: { identifier: email, password }
 export async function patientLogin(data) {
   console.log("patientLogin :: ", data)
   return await fetch(`${PATIENT_API}/login`, {
