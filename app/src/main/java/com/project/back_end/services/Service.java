@@ -119,6 +119,10 @@ public class Service {
 		if (!safeTime.isEmpty()) {
 			return doctorService.filterDoctorsByTime(safeTime);
 		}
+		// Handle name-only search
+		if (!safeName.isEmpty()) {
+			return doctorService.findDoctorByName(safeName);
+		}
 
 		// Default: no filters, return all doctors
 		Map<String, Object> response = new HashMap<>();
