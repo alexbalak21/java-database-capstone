@@ -43,7 +43,28 @@
           <div class="filter-wrapper">
             <button id="todayAppointments" class="filter-btn">Today's Appointments</button>
             <input type="date" id="dateFilter" class="date-input">
+            
+            <!-- Status Filter Dropdown -->
+            <select id="statusFilter" class="filter-select">
+              <option value="">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="consulted">Consulted</option>
+            </select>
           </div>
+        </div>
+        
+        <!-- Error Message Container -->
+        <div id="errorContainer" class="error-container" style="display: none;">
+          <div class="error-message">
+            <span id="errorText"></span>
+            <button class="error-close" onclick="document.getElementById('errorContainer').style.display='none';">×</button>
+          </div>
+        </div>
+        
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+          <div class="spinner"></div>
+          <p>Loading appointments...</p>
         </div>
         
         <!-- Patient Records Table -->
@@ -55,6 +76,7 @@
                 <th>Name</th>
                 <th>Phone</th>
                 <th>Email</th>
+                <th data-label="Status">Status</th>
                 <th>Prescription</th>
               </tr>
             </thead>
@@ -65,6 +87,13 @@
           <p id="noPatientRecord" class="noPatientRecord" style="display: none;">
             No patient records found
           </p>
+        </div>
+        
+        <!-- Pagination Controls -->
+        <div id="paginationContainer" class="pagination-container" style="display: none;">
+          <button id="prevBtn" class="pagination-btn" onclick="previousPage()">← Previous</button>
+          <span id="pageInfo" class="page-info"></span>
+          <button id="nextBtn" class="pagination-btn" onclick="nextPage()">Next →</button>
         </div>
       </main>
       
