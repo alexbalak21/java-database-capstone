@@ -3,6 +3,7 @@ export function openModal(type) {
   let modalContent = '';
   if (type === 'addDoctor') {
     modalContent = `
+         <span id="closeModal" class="close">&times;</span>
          <h2>Add Doctor</h2>
          <input type="text" id="doctorName" placeholder="Doctor Name" class="input-field">
          <select id="specialization" class="input-field select-dropdown">
@@ -39,6 +40,7 @@ export function openModal(type) {
       `;
   } else if (type === 'patientLogin') {
     modalContent = `
+        <span id="closeModal" class="close">&times;</span>
         <h2>Patient Login</h2>
         <input type="text" id="email" placeholder="Email" class="input-field" value="jane.doe@example.com">
         <input type="password" id="password" placeholder="Password" class="input-field" value="passJane1">
@@ -47,6 +49,7 @@ export function openModal(type) {
   }
   else if (type === "patientSignup") {
     modalContent = `
+      <span id="closeModal" class="close">&times;</span>
       <h2>Patient Signup</h2>
       <input type="text" id="name" placeholder="Name" class="input-field">
       <input type="email" id="email" placeholder="Email" class="input-field">
@@ -58,6 +61,7 @@ export function openModal(type) {
 
   } else if (type === 'adminLogin') {
     modalContent = `
+        <span id="closeModal" class="close">&times;</span>
         <h2>Admin Login</h2>
         <input type="text" id="username" name="username" placeholder="Username" class="input-field" value="admin">
         <input type="password" id="password" name="password" placeholder="Password" class="input-field" value="admin@1234">
@@ -65,6 +69,7 @@ export function openModal(type) {
       `;
   } else if (type === 'doctorLogin') {
     modalContent = `
+        <span id="closeModal" class="close">&times;</span>
         <h2>Doctor Login</h2>
         <input type="text" id="email" placeholder="Email" class="input-field" value="dr.adams@example.com">
         <input type="password" id="password" placeholder="Password" class="input-field" value="pass12345">
@@ -100,3 +105,7 @@ export function openModal(type) {
     document.getElementById('doctorLoginBtn').addEventListener('click', doctorLoginHandler);
   }
 }
+
+// Expose to non-module scripts (e.g., header.js inline onclick)
+// Safe to assign even when imported elsewhere as a module.
+window.openModal = openModal;

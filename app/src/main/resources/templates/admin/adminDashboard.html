@@ -15,6 +15,7 @@
   <script th:src="@{/js/util.js}" defer></script>
   
   <!-- Component Scripts -->
+  <script type="module" th:src="@{/js/components/modals.js}" defer></script>
   <script th:src="@{/js/components/header.js}" defer></script>
   <script th:src="@{/js/components/footer.js}" defer></script>
 </head>
@@ -63,7 +64,6 @@
   
   <!-- Modal for Adding Doctor -->
   <div id="modal" class="modal">
-    <span id="closeModal" class="close">&times;</span>
     <div id="modal-body"></div>
   </div>
   
