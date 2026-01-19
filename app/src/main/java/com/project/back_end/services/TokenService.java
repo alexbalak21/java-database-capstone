@@ -9,12 +9,12 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Date;
+import javax.crypto.SecretKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
-import java.util.Date;
 
 /**
  * TokenService handles JWT token generation, validation, and extraction of user information.
@@ -29,20 +29,25 @@ import java.util.Date;
 @Component
 public class TokenService {
 
+    private static final Logger log = LoggerFactory.getLogger(TokenService.class);
+
     @Value("${jwt.secret}")
     private String jwtSecret;
 
     @Value("${jwt.expiration:604800000}") // 7 days default
     private long jwtExpiration;
 
-    @Autowired
-    private AdminRepository adminRepository;
+    private final AdminRepository adminRepository;
+    private final DoctorRepository doctorRepository;
+    private final PatientRepository patientRepository;
 
-    @Autowired
-    private DoctorRepository doctorRepository;
-
-    @Autowired
-    private PatientRepository patientRepository;
+    public TokenService(AdminRepository adminRepository,
+                        DoctorRepository doctorRepository,
+                        PatientRepository patientRepository) {
+        this.adminRepository = adminRepository;
+        this.doctorRepository = doctorRepository;
+        this.patientRepository = patientRepository;
+    }
 
     /**
      * Retrieves the HMAC SHA signing key from the JWT secret.
@@ -58,9 +63,9 @@ public class TokenService {
      * @param email The user's email (used as the token subject)
      * @return The generated JWT token as a String
      */
-    public String generateToken(String email) {
+    public String generateToken(String identifier) {
         return Jwts.builder()
-                .subject(email)
+                .subject(identifier)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSigningKey())
@@ -88,6 +93,13 @@ public class TokenService {
         } catch (Exception e) {
             throw new InvalidTokenException("Invalid token: " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * Extracts the identifier (subject) from a JWT token.
+     */
+    public String extractIdentifier(String token) {
+        return extractEmail(token);
     }
 
     /**
@@ -122,19 +134,20 @@ public class TokenService {
      */
     public boolean validateToken(String token, String role) {
         try {
-            String email = extractEmail(token);
+            String identifier = extractIdentifier(token);
             
             switch (role.toLowerCase()) {
                 case "admin":
-                    return adminRepository.findByUsername(email).isPresent();
+                    return adminRepository.findByUsername(identifier) != null;
                 case "doctor":
-                    return doctorRepository.findByEmail(email).isPresent();
+                    return doctorRepository.findByEmail(identifier).isPresent();
                 case "patient":
-                    return patientRepository.findByEmail(email).isPresent();
+                    return patientRepository.findByEmail(identifier).isPresent();
                 default:
                     return false;
             }
         } catch (TokenExpiredException | InvalidTokenException e) {
+            log.warn("Token validation failed: {}", e.getMessage());
             return false;
         }
     }
@@ -155,6 +168,7 @@ public class TokenService {
             long remainingTime = claims.getExpiration().getTime() - System.currentTimeMillis();
             return Math.max(remainingTime, -1);
         } catch (Exception e) {
+            log.warn("Failed to compute token remaining time: {}", e.getMessage());
             return -1;
         }
 }

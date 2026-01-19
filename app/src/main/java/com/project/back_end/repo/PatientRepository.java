@@ -2,7 +2,7 @@ package com.project.back_end.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.project.back_end.model.Patient;
+import com.project.back_end.models.Patient;
 import java.util.Optional;
 
 @Repository
