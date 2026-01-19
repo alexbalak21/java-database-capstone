@@ -5,210 +5,131 @@ import com.project.back_end.exceptions.TokenExpiredException;
 import com.project.back_end.repo.AdminRepository;
 import com.project.back_end.repo.DoctorRepository;
 import com.project.back_end.repo.PatientRepository;
+import com.project.back_end.models.Patient;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Optional;
 import javax.crypto.SecretKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-/**
- * TokenService handles JWT token generation, validation, and extraction of user information.
- * 
- * Features:
- * - Generates JWT tokens with expiration
- * - Validates tokens for authenticity and expiration
- * - Extracts email from tokens
- * - Validates tokens based on user role (admin, doctor, patient)
- * - Handles token expiration and invalid token scenarios
- */
 @Component
 public class TokenService {
 
-    private static final Logger log = LoggerFactory.getLogger(TokenService.class);
+	private static final Logger log = LoggerFactory.getLogger(TokenService.class);
 
-    @Value("${jwt.secret}")
-    private String jwtSecret;
+	@Value("${jwt.secret}")
+	private String jwtSecret;
 
-    @Value("${jwt.expiration:604800000}") // 7 days default
-    private long jwtExpiration;
+	@Value("${jwt.expiration:604800000}") // 7 days default
+	private long jwtExpiration;
 
-    private final AdminRepository adminRepository;
-    private final DoctorRepository doctorRepository;
-    private final PatientRepository patientRepository;
+	private final AdminRepository adminRepository;
+	private final DoctorRepository doctorRepository;
+	private final PatientRepository patientRepository;
 
-    public TokenService(AdminRepository adminRepository,
-                        DoctorRepository doctorRepository,
-                        PatientRepository patientRepository) {
-        this.adminRepository = adminRepository;
-        this.doctorRepository = doctorRepository;
-        this.patientRepository = patientRepository;
-    }
+	public TokenService(AdminRepository adminRepository,
+					  DoctorRepository doctorRepository,
+					  PatientRepository patientRepository) {
+		this.adminRepository = adminRepository;
+		this.doctorRepository = doctorRepository;
+		this.patientRepository = patientRepository;
+	}
 
-    /**
-     * Retrieves the HMAC SHA signing key from the JWT secret.
-     * This key is used to sign and verify JWT tokens.
-     */
-    private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
-    }
+	private SecretKey getSigningKey() {
+		return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+	}
 
-    /**
-     * Generates a JWT token for a user based on their email.
-     * 
-     * @param email The user's email (used as the token subject)
-     * @return The generated JWT token as a String
-     */
-    public String generateToken(String identifier) {
-        return Jwts.builder()
-                .subject(identifier)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
-                .signWith(getSigningKey())
-                .compact();
-    }
+	public String generateToken(String identifier) {
+		return Jwts.builder()
+				.subject(identifier)
+				.issuedAt(new Date())
+				.expiration(new Date(System.currentTimeMillis() + jwtExpiration))
+				.signWith(getSigningKey())
+				.compact();
+	}
 
-    /**
-     * Extracts the email (subject) from a JWT token.
-     * 
-     * @param token The JWT token
-     * @return The email extracted from the token
-     * @throws TokenExpiredException if the token has expired
-     * @throws InvalidTokenException if the token is invalid or malformed
-     */
-    public String extractEmail(String token) {
-        try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-            return claims.getSubject();
-        } catch (ExpiredJwtException e) {
-            throw new TokenExpiredException("Token has expired", e);
-        } catch (Exception e) {
-            throw new InvalidTokenException("Invalid token: " + e.getMessage(), e);
-        }
-    }
+	public String extractIdentifier(String token) {
+		try {
+			Claims claims = Jwts.parser()
+							.verifyWith(getSigningKey())
+							.build()
+							.parseSignedClaims(token)
+							.getPayload();
+			return claims.getSubject();
+		} catch (ExpiredJwtException e) {
+			throw new TokenExpiredException("Token has expired", e);
+		} catch (Exception e) {
+			throw new InvalidTokenException("Invalid token: " + e.getMessage(), e);
+		}
+	}
 
-    /**
-     * Extracts the identifier (subject) from a JWT token.
-     */
-    public String extractIdentifier(String token) {
-        return extractEmail(token);
-    }
+	public String extractEmail(String token) {
+		return extractIdentifier(token);
+	}
 
-    /**
-     * Checks if a token has expired without throwing exceptions.
-     * Useful for checks that don't require exception handling.
-     * 
-     * @param token The JWT token
-     * @return true if the token is expired, false otherwise
-     */
-    public boolean isTokenExpired(String token) {
-        try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-            return claims.getExpiration().before(new Date());
-        } catch (ExpiredJwtException e) {
-            return true;
-        } catch (Exception e) {
-            return true;
-        }
-    }
+	public boolean validateToken(String token, String role) {
+		try {
+			String identifier = extractIdentifier(token);
 
-    /**
-     * Validates a JWT token for a specific user role.
-     * Checks both token validity and user existence in the appropriate repository.
-     * 
-     * @param token The JWT token
-     * @param role The user role (admin, doctor, or patient)
-     * @return true if the token is valid and the user exists for the given role, false otherwise
-     */
-    public boolean validateToken(String token, String role) {
-        try {
-            String identifier = extractIdentifier(token);
-            
-            switch (role.toLowerCase()) {
-                case "admin":
-                    return adminRepository.findByUsername(identifier) != null;
-                case "doctor":
-                    return doctorRepository.findByEmail(identifier).isPresent();
-                case "patient":
-                    return patientRepository.findByEmail(identifier).isPresent();
-                default:
-                    return false;
-            }
-        } catch (TokenExpiredException | InvalidTokenException e) {
-            log.warn("Token validation failed: {}", e.getMessage());
-            return false;
-        }
-    }
+			switch (role.toLowerCase()) {
+				case "admin":
+					return adminRepository.findByUsername(identifier) != null;
+				case "doctor":
+					return doctorRepository.findByEmail(identifier).isPresent();
+				case "patient":
+					return patientRepository.findByEmail(identifier).isPresent();
+				default:
+					return false;
+			}
+		} catch (TokenExpiredException | InvalidTokenException e) {
+			log.warn("Token validation failed: {}", e.getMessage());
+			return false;
+		}
+	}
 
-    /**
-     * Gets the remaining validity time of a token in milliseconds.
-     * 
-     * @param token The JWT token
-     * @return Remaining milliseconds until expiration, or -1 if already expired
-     */
-    public long getTokenRemainingTime(String token) {
-        try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-            long remainingTime = claims.getExpiration().getTime() - System.currentTimeMillis();
-            return Math.max(remainingTime, -1);
-        } catch (Exception e) {
-            log.warn("Failed to compute token remaining time: {}", e.getMessage());
-            return -1;
-        }
-}
+	public Long extractDoctorId(String token) {
+		try {
+			String email = extractIdentifier(token);
+			return doctorRepository.findByEmail(email)
+					.map(doc -> doc.getId())
+					.orElse(null);
+		} catch (Exception e) {
+			log.warn("Failed to extract doctor id: {}", e.getMessage());
+			return null;
+		}
+	}
 
-// The @Component annotation marks this class as a Spring component, meaning Spring will manage it as a bean within its application context.
-// This allows the class to be injected into other Spring-managed components (like services or controllers) where it's needed.
+	public Long extractPatientId(String token) {
+		try {
+			String email = extractIdentifier(token);
+			return patientRepository.findByEmail(email)
+					.map(Patient::getId)
+					.orElse(null);
+		} catch (Exception e) {
+			log.warn("Failed to extract patient id: {}", e.getMessage());
+			return null;
+		}
+	}
 
-// 2. **Constructor Injection for Dependencies**
-// The constructor injects dependencies for `AdminRepository`, `DoctorRepository`, and `PatientRepository`,
-// allowing the service to interact with the database and validate users based on their role (admin, doctor, or patient).
-// Constructor injection ensures that the class is initialized with all required dependencies, promoting immutability and making the class testable.
-
-// 3. **getSigningKey Method**
-// This method retrieves the HMAC SHA key used to sign JWT tokens.
-// It uses the `jwt.secret` value, which is provided from an external source (like application properties).
-// The `Keys.hmacShaKeyFor()` method converts the secret key string into a valid `SecretKey` for signing and verification of JWTs.
-
-// 4. **generateToken Method**
-// This method generates a JWT token for a user based on their email.
-// - The `subject` of the token is set to the user's email, which is used as an identifier.
-// - The `issuedAt` is set to the current date and time.
-// - The `expiration` is set to 7 days from the issue date, ensuring the token expires after one week.
-// - The token is signed using the signing key generated by `getSigningKey()`, making it secure and tamper-proof.
-// The method returns the JWT token as a string.
-
-// 5. **extractEmail Method**
-// This method extracts the user's email (subject) from the provided JWT token.
-// - The token is first verified using the signing key to ensure it hasn’t been tampered with.
-// - After verification, the token is parsed, and the subject (which represents the email) is extracted.
-// This method allows the application to retrieve the user's identity (email) from the token for further use.
-
-// 6. **validateToken Method**
-// This method validates whether a provided JWT token is valid for a specific user role (admin, doctor, or patient).
-// - It first extracts the email from the token using the `extractEmail()` method.
-// - Depending on the role (`admin`, `doctor`, or `patient`), it checks the corresponding repository (AdminRepository, DoctorRepository, or PatientRepository)
-//   to see if a user with the extracted email exists.
-// - If a match is found for the specified user role, it returns true, indicating the token is valid.
-// - If the role or user does not exist, it returns false, indicating the token is invalid.
-// - The method gracefully handles any errors by returning false if the token is invalid or an exception occurs.
-// This ensures secure access control based on the user's role and their existence in the system.
-
-
+	public long getTokenRemainingTime(String token) {
+		try {
+			Claims claims = Jwts.parser()
+							.verifyWith(getSigningKey())
+							.build()
+							.parseSignedClaims(token)
+							.getPayload();
+			long remainingTime = claims.getExpiration().getTime() - System.currentTimeMillis();
+			return Math.max(remainingTime, -1);
+		} catch (Exception e) {
+			log.warn("Failed to compute token remaining time: {}", e.getMessage());
+			return -1;
+		}
+	}
 }

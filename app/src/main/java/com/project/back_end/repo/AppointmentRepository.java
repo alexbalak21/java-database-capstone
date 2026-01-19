@@ -22,7 +22,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
      * @param end the end of the time range
      * @return List of appointments for the doctor within the time range
      */
-    @Query("SELECT a FROM Appointment a LEFT JOIN FETCH a.doctor LEFT JOIN FETCH a.doctorAvailability WHERE a.doctor.id = :doctorId AND a.appointmentTime BETWEEN :start AND :end")
+        @Query("SELECT a FROM Appointment a LEFT JOIN FETCH a.doctor WHERE a.doctor.id = :doctorId AND a.appointmentTime BETWEEN :start AND :end")
     List<Appointment> findByDoctorIdAndAppointmentTimeBetween(
             @Param("doctorId") Long doctorId,
             @Param("start") LocalDateTime start,

@@ -194,7 +194,7 @@ public class DoctorService {
         
         try {
             // Find doctor by email
-            Optional<Doctor> doctorOpt = doctorRepository.findByEmail(login.getEmail());
+            Optional<Doctor> doctorOpt = doctorRepository.findByEmail(login.getIdentifier());
             if (doctorOpt.isEmpty()) {
                 response.put("message", "Doctor not found");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
@@ -209,7 +209,7 @@ public class DoctorService {
             }
             
             // Generate token
-            String token = tokenService.generateToken(doctor.getId(), "DOCTOR");
+            String token = tokenService.generateToken(doctor.getEmail());
             response.put("message", "Login successful");
             response.put("token", token);
             return ResponseEntity.ok(response);
@@ -418,16 +418,33 @@ public class DoctorService {
      */
     private List<Doctor> filterDoctorByTime(List<Doctor> doctors, String amOrPm) {
         List<Doctor> filteredDoctors = new ArrayList<>();
-        
+
+        if (amOrPm == null || amOrPm.isEmpty()) {
+            return doctors;
+        }
+
+        String target = amOrPm.toUpperCase();
+
         for (Doctor doctor : doctors) {
-            if (doctor.getAvailableTime() != null) {
-                String availableTime = doctor.getAvailableTime().toUpperCase();
-                if (availableTime.equals(amOrPm.toUpperCase())) {
-                    filteredDoctors.add(doctor);
+            if (doctor.getAvailableTimes() == null || doctor.getAvailableTimes().isEmpty()) {
+                continue;
+            }
+
+            boolean matches = doctor.getAvailableTimes().stream().anyMatch(slot -> {
+                try {
+                    LocalTime time = LocalTime.parse(slot);
+                    return ("AM".equals(target) && time.isBefore(LocalTime.NOON))
+                            || ("PM".equals(target) && !time.isBefore(LocalTime.NOON));
+                } catch (Exception e) {
+                    return false;
                 }
+            });
+
+            if (matches) {
+                filteredDoctors.add(doctor);
             }
         }
-        
+
         return filteredDoctors;
     }
 

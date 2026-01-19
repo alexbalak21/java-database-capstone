@@ -25,7 +25,7 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
-    private final Service service;
+    private final com.project.back_end.services.Service appService;
     private final TokenService tokenService;
 
     /**
@@ -34,12 +34,12 @@ public class AppointmentService {
     public AppointmentService(AppointmentRepository appointmentRepository,
                                PatientRepository patientRepository,
                                DoctorRepository doctorRepository,
-                               Service service,
+                               com.project.back_end.services.Service appService,
                                TokenService tokenService) {
         this.appointmentRepository = appointmentRepository;
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
-        this.service = service;
+        this.appService = appService;
         this.tokenService = tokenService;
     }
 
@@ -79,8 +79,13 @@ public class AppointmentService {
             }
 
             // Validate appointment
-            if (!service.validateAppointment(appointment)) {
-                response.put("message", "Invalid appointment data");
+            int validationResult = appService.validateAppointment(appointment);
+            if (validationResult == -1) {
+                response.put("message", "Doctor not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+            if (validationResult == 0) {
+                response.put("message", "Selected time is not available");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
 
