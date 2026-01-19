@@ -58,8 +58,9 @@ window.loginPatient = async function() {
 
     if (response.ok) {
       const result = await response.json();
-      // Save token and navigate to logged patient dashboard
+      // Save token and role before navigating
       localStorage.setItem("token", result.token);
+      setRole("loggedPatient");
       window.location.href = "/pages/loggedPatientDashboard.html";
     } else {
       alert("❌ Invalid patient credentials!");
