@@ -10,8 +10,10 @@ const DOCTOR_API = API_BASE_URL + '/doctor';
  */
 export async function getDoctors() {
   try {
+    console.log("[doctorServices] GET /doctor start");
     // Use authorizedFetch() to send a GET request with JWT token in Authorization header
     const response = await authorizedFetch(DOCTOR_API);
+    console.log("[doctorServices] GET /doctor status", response.status);
     
     // Convert the response to JSON
     const data = await response.json();
@@ -101,17 +103,20 @@ export async function filterDoctors(name, time, specialty) {
     
     // Use authorizedFetch() with the GET method and query parameters
     const url = params.toString() ? `${DOCTOR_API}/filter?${params.toString()}` : DOCTOR_API;
+    console.log("[doctorServices] filterDoctors request", url);
     const response = await authorizedFetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json"
       }
     });
+    console.log("[doctorServices] filterDoctors status", response.status);
     
     // Check if the response is OK
     if (response.ok) {
       // If yes, parse and return the doctor data
       const data = await response.json();
+      console.log("[doctorServices] filterDoctors data", data);
       return data;
     } else {
       // If no, log the error and return an object with an empty 'doctors' array
@@ -120,7 +125,7 @@ export async function filterDoctors(name, time, specialty) {
     }
   } catch (error) {
     // Catch any other errors, alert the user, and return a default empty result
-    console.error("Error filtering doctors:", error);
+    console.error("[doctorServices] Error filtering doctors:", error);
     alert("Something went wrong while filtering doctors!");
     return { doctors: [] };
   }

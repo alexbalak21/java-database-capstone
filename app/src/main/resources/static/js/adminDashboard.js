@@ -17,7 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
 async function loadDoctorCards() {
   try {
     // Call getDoctors() from the service layer
+    console.log("[adminDashboard] loadDoctorCards: fetching all doctors...");
     const doctors = await getDoctors();
+    console.log("[adminDashboard] loadDoctorCards: received", doctors?.length, "doctors", doctors);
     
     // Clear the current content area
     const contentDiv = document.getElementById("content");
@@ -57,7 +59,9 @@ async function filterDoctorsOnChange() {
   
   try {
     // Call filterDoctors(name, time, specialty) from the service
+    console.log("[adminDashboard] filterDoctorsOnChange: params", { name, time, specialty });
     const response = await filterDoctors(name, time, specialty);
+    console.log("[adminDashboard] filterDoctorsOnChange: response", response);
     const doctors = response.doctors;
     
     const contentDiv = document.getElementById("content");
@@ -75,7 +79,7 @@ async function filterDoctorsOnChange() {
     }
   } catch (error) {
     // Catch and display any errors with an alert
-    console.error("Failed to filter doctors:", error);
+    console.error("[adminDashboard] Failed to filter doctors:", error);
     alert("❌ An error occurred while filtering doctors.");
   }
 }
