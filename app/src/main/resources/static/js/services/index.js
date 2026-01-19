@@ -1,6 +1,7 @@
 // index.js - Login Service Layer
 import { openModal } from "../components/modals.js";
 import { API_BASE_URL } from "../config/config.js";
+import { patientLogin } from "./patientServices.js";
 
 // Define constants for the admin and doctor login API endpoints using the base URL
 const ADMIN_API = API_BASE_URL + '/admin';
@@ -35,6 +36,36 @@ window.onload = function() {
       // Show patient login modal instead of navigating directly
       openModal('patientLogin');
     });
+  }
+};
+
+/**
+ * Global patient login handler used by the modal
+ */
+window.loginPatient = async function() {
+  try {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+
+    if (!email || !password) {
+      alert("Please enter both email and password.");
+      return;
+    }
+
+    const data = { email, password };
+    const response = await patientLogin(data);
+
+    if (response.ok) {
+      const result = await response.json();
+      // Save token and navigate to logged patient dashboard
+      localStorage.setItem("token", result.token);
+      window.location.href = "/pages/loggedPatientDashboard.html";
+    } else {
+      alert("❌ Invalid patient credentials!");
+    }
+  } catch (error) {
+    console.error("Patient login error:", error);
+    alert("❌ An error occurred during login. Please try again.");
   }
 };
 
