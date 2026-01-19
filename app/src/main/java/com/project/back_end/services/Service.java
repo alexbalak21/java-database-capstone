@@ -69,10 +69,12 @@ public class Service {
 		try {
 			Admin admin = adminRepository.findByUsername(receivedAdmin.getUsername());
 			if (admin == null) {
+				log.error("Admin not found for username: {}", receivedAdmin.getUsername());
 				response.put("message", "Admin not found");
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
 			}
 
+			log.info("Comparing passwords - DB: '{}', Received: '{}'", admin.getPassword(), receivedAdmin.getPassword());
 			if (!admin.getPassword().equals(receivedAdmin.getPassword())) {
 				response.put("message", "Invalid credentials");
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);

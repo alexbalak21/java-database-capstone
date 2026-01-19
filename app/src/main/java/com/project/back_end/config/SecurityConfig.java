@@ -54,17 +54,19 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         // Public endpoints (no authentication required)
                         .requestMatchers("/", "/index.html", "/assets/**", "/js/**", "/css/**", "/images/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/admin/login", "/doctor/login", "/patient/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/admin", "/admin/login", "/doctor/login", "/patient/login").permitAll()
+                        
+                        // Dashboard pages (validated by controller, allow access)
+                        .requestMatchers("/adminDashboard/**").permitAll()
+                        .requestMatchers("/doctorDashboard/**").permitAll()
                         
                         // Admin endpoints (require ADMIN role)
-                        .requestMatchers("/adminDashboard/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/admin/**").hasRole("ADMIN")
                         
                         // Doctor endpoints (require DOCTOR role)
-                        .requestMatchers("/doctorDashboard/**").hasRole("DOCTOR")
                         .requestMatchers(HttpMethod.GET, "/doctor/**").hasRole("DOCTOR")
                         .requestMatchers(HttpMethod.POST, "/doctor/**").hasRole("DOCTOR")
                         .requestMatchers(HttpMethod.PUT, "/doctor/**").hasRole("DOCTOR")

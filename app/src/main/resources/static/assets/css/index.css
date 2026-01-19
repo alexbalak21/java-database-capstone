@@ -1,5 +1,7 @@
 /* index.css - Landing Page Styles */
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
 /* Global Reset */
 * {
   margin: 0;
@@ -25,7 +27,7 @@ html, body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-image: url('../images/background.jpg');
+  background-image: url('../images/index.png');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;

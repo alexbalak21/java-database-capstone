@@ -22,7 +22,7 @@ html, body {
 .main-content {
   flex: 1;
   padding: 2rem;
-  background-image: url('../images/background.jpg');
+  background-image: url('../images/index.png');
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
