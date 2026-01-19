@@ -1,0 +1,11 @@
+Admin Login :
+admin
+admin@1234
+
+Doctor Login :
+dr.adams@example.com
+pass12345
+
+Patient Login:
+jane.doe@example.com
+passJane1

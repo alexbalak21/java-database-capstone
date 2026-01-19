@@ -59,6 +59,11 @@ public class SecurityConfig {
                         // Dashboard pages (validated by controller, allow access)
                         .requestMatchers("/adminDashboard/**").permitAll()
                         .requestMatchers("/doctorDashboard/**").permitAll()
+                        .requestMatchers("/patientDashboard/**").permitAll()
+                        
+                        // Public static pages for patient login and post-login landing
+                        .requestMatchers("/pages/patientDashboard.html").permitAll()
+                        .requestMatchers("/pages/loggedPatientDashboard.html").permitAll()
                         
                         // Admin endpoints (require ADMIN role)
                         .requestMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")

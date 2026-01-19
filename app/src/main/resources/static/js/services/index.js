@@ -11,6 +11,7 @@ window.onload = function() {
   // Bind click handlers to the role buttons on the landing page
   const adminBtn = document.getElementById("adminBtn");
   const doctorBtn = document.getElementById("doctorBtn");
+  const patientBtn = document.getElementById("patientBtn");
   
   // If the admin login button exists, add a click event listener
   if (adminBtn) {
@@ -25,6 +26,14 @@ window.onload = function() {
     doctorBtn.addEventListener("click", () => {
       // Call openModal('doctorLogin') to show the doctor login modal
       openModal('doctorLogin');
+    });
+  }
+
+  // If the patient button exists, add a click event listener
+  if (patientBtn) {
+    patientBtn.addEventListener("click", () => {
+      // Show patient login modal instead of navigating directly
+      openModal('patientLogin');
     });
   }
 };
