@@ -35,13 +35,23 @@ document.addEventListener('DOMContentLoaded', async () => {
       const response = await getPrescription(appointmentId, token);
       console.log("getPrescription :: ", response);
 
-      // Now, check if the prescription exists in the response and access it from the array
-      if (response.prescription && response.prescription.length > 0) {
-        const existingPrescription = response.prescription[0]; // Access first prescription object
-        patientNameInput.value = existingPrescription.patientName || YOU;
+      // Check if the prescription exists in the response
+      if (response.prescriptions && response.prescriptions.length > 0) {
+        const existingPrescription = response.prescriptions[0]; // Access first prescription object
+        patientNameInput.value = existingPrescription.patientName || patientName;
         medicinesInput.value = existingPrescription.medication || "";
         dosageInput.value = existingPrescription.dosage || "";
         notesInput.value = existingPrescription.doctorNotes || "";
+        
+        // Automatically switch to view mode if prescription exists
+        if (!mode) {
+          // Make fields read-only
+          heading.innerHTML = `View <span>Prescription</span>`;
+          medicinesInput.disabled = true;
+          dosageInput.disabled = true;
+          notesInput.disabled = true;
+          savePrescriptionBtn.style.display = "none";  // Hide the save button
+        }
       }
 
     } catch (error) {
