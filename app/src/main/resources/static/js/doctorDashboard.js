@@ -75,16 +75,20 @@ function displayPaginatedAppointments() {
     console.log('🔴 [displayPaginatedAppointments] Paginated appointments:', paginatedAppointments);
     paginatedAppointments.forEach(appointment => {
       console.log('🔴 [displayPaginatedAppointments] Processing appointment:', appointment);
+      
+      // Convert status number to string (0 = pending, 1 = consulted)
+      const statusString = appointment.status === 1 ? 'consulted' : 'pending';
+      
       const patient = {
-        id: appointment.patientId,
-        name: appointment.patientName,
-        phone: appointment.patientPhone || "N/A",
-        email: appointment.patientEmail || "N/A",
-        status: appointment.status || "pending"
+        id: appointment.patient?.id,
+        name: appointment.patient?.name,
+        phone: appointment.patient?.phone || "N/A",
+        email: appointment.patient?.email || "N/A",
+        status: statusString
       };
       console.log('🔴 [displayPaginatedAppointments] Created patient object:', patient);
       
-      const row = createPatientRow(patient, appointment.id, appointment.doctorId);
+      const row = createPatientRow(patient, appointment.id, appointment.doctor?.id);
       tableBody.appendChild(row);
     });
     console.log('🔴 [displayPaginatedAppointments] All rows added to table');
