@@ -5,12 +5,20 @@ const APPOINTMENT_API = `${API_BASE_URL}/appointments`;
 
 //This is for the doctor to get all the patient Appointments
 export async function getAllAppointments(date, patientName, token) {
-  const response = await authorizedFetch(`${APPOINTMENT_API}?date=${date}&patientName=${patientName}`);
+  const url = `${APPOINTMENT_API}?date=${date}&patientName=${patientName}`;
+  console.log('🔵 [getAllAppointments] Fetching appointments from:', url);
+  console.log('🔵 [getAllAppointments] Parameters:', { date, patientName, token: token ? 'present' : 'missing' });
+  
+  const response = await authorizedFetch(url);
+  console.log('🔵 [getAllAppointments] Response status:', response.status, response.ok ? '✅' : '❌');
+  
   if (!response.ok) {
     throw new Error("Failed to fetch appointments");
   }
 
-  return await response.json();
+  const data = await response.json();
+  console.log('🔵 [getAllAppointments] Response data:', data);
+  return data;
 }
 
 export async function bookAppointment(appointment, token) {

@@ -53,13 +53,17 @@ function showLoading(show = true) {
  */
 function displayPaginatedAppointments() {
   try {
+    console.log('🔴 [displayPaginatedAppointments] Starting display...', { allAppointments, currentPage, itemsPerPage });
     tableBody.innerHTML = "";
     
     if (!allAppointments || allAppointments.length === 0) {
+      console.log('🔴 [displayPaginatedAppointments] No appointments to display');
       tableBody.innerHTML = `<tr><td colspan="6" class="noPatientRecord">No Appointments found for ${selectedDate}.</td></tr>`;
       document.getElementById("paginationContainer").style.display = "none";
       return;
     }
+    
+    console.log('🔴 [displayPaginatedAppointments] Total appointments:', allAppointments.length);
     
     // Calculate pagination
     const totalPages = Math.ceil(allAppointments.length / itemsPerPage);
@@ -68,7 +72,9 @@ function displayPaginatedAppointments() {
     const paginatedAppointments = allAppointments.slice(startIndex, endIndex);
     
     // Display appointments for current page
+    console.log('🔴 [displayPaginatedAppointments] Paginated appointments:', paginatedAppointments);
     paginatedAppointments.forEach(appointment => {
+      console.log('🔴 [displayPaginatedAppointments] Processing appointment:', appointment);
       const patient = {
         id: appointment.patientId,
         name: appointment.patientName,
@@ -76,10 +82,12 @@ function displayPaginatedAppointments() {
         email: appointment.patientEmail || "N/A",
         status: appointment.status || "pending"
       };
+      console.log('🔴 [displayPaginatedAppointments] Created patient object:', patient);
       
       const row = createPatientRow(patient, appointment.id, appointment.doctorId);
       tableBody.appendChild(row);
     });
+    console.log('🔴 [displayPaginatedAppointments] All rows added to table');
     
     // Show pagination controls if there are multiple pages
     if (totalPages > 1) {
@@ -127,14 +135,23 @@ window.nextPage = function() {
  * Apply status filter to appointments
  */
 function applyStatusFilter(appointments) {
+  console.log('🟡 [applyStatusFilter] Input appointments:', appointments);
+  console.log('🟡 [applyStatusFilter] Current status filter:', statusFilter);
+  
   if (!statusFilter) {
+    console.log('🟡 [applyStatusFilter] No filter applied, returning all appointments');
     return appointments;
   }
   
-  return appointments.filter(apt => {
+  const filtered = appointments.filter(apt => {
     const appointmentStatus = (apt.status || "pending").toLowerCase();
-    return appointmentStatus === statusFilter.toLowerCase();
+    const match = appointmentStatus === statusFilter.toLowerCase();
+    console.log('🟡 [applyStatusFilter] Appointment:', apt.id, 'Status:', appointmentStatus, 'Match:', match);
+    return match;
   });
+  
+  console.log('🟡 [applyStatusFilter] Filtered result:', filtered);
+  return filtered;
 }
 
 // Add an 'input' event listener to the search bar
@@ -173,17 +190,25 @@ document.getElementById("dateFilter").addEventListener("change", (e) => {
  */
 async function loadAppointments() {
   try {
+    console.log('🟢 [loadAppointments] Starting...', { selectedDate, patientName, statusFilter, token: token ? 'present' : 'missing' });
     showLoading(true);
     
     // Fetch appointments from API
-    const appointments = await getAllAppointments(selectedDate, patientName, token);
+    const response = await getAllAppointments(selectedDate, patientName, token);
+    console.log('🟢 [loadAppointments] Received response:', response);
     
-    if (!appointments) {
+    if (!response || !response.appointments) {
+      console.error('❌ [loadAppointments] Invalid response structure:', response);
       throw new Error("Failed to fetch appointments. Please try again.");
     }
     
+    console.log('🟢 [loadAppointments] Appointments array:', response.appointments);
+    console.log('🟢 [loadAppointments] Appointments count:', response.appointments.length);
+    
     // Apply status filter
-    allAppointments = applyStatusFilter(appointments);
+    allAppointments = applyStatusFilter(response.appointments);
+    console.log('🟢 [loadAppointments] After status filter:', allAppointments);
+    console.log('🟢 [loadAppointments] Filtered count:', allAppointments.length);
     
     // Reset to first page and display
     currentPage = 1;
