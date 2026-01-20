@@ -141,7 +141,7 @@ window.doctorLoginHandler = async function() {
     
     // Step 2: Create a doctor object with these credentials
     const doctor = {
-      email,
+      identifier: email,
       password
     };
     
