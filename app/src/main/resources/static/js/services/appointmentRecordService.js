@@ -5,7 +5,14 @@ const APPOINTMENT_API = `${API_BASE_URL}/appointments`;
 
 //This is for the doctor to get all the patient Appointments
 export async function getAllAppointments(date, patientName, token) {
-  const url = `${APPOINTMENT_API}?date=${date}&patientName=${patientName}`;
+  // Build URL with conditional patientName parameter
+  let url = `${APPOINTMENT_API}?date=${date}`;
+  if (patientName && patientName.trim() !== '') {
+    url += `&patientName=${encodeURIComponent(patientName)}`;
+  } else {
+    url += `&patientName=`;
+  }
+  
   console.log('🔵 [getAllAppointments] Fetching appointments from:', url);
   console.log('🔵 [getAllAppointments] Parameters:', { date, patientName, token: token ? 'present' : 'missing' });
   
