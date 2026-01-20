@@ -1,0 +1,16 @@
+Build container :
+docker build -t smart-clinic-backend .
+
+Stop & Remove the previous container : 
+docker stop smart-clinic
+docker rm smart-clinic
+
+Run the container:
+docker run -p 8100:8100 --name smart-clinic smart-clinic-backend
+
+
+Tag image :
+docker tag smart-clinic-backend alexbalak/smart-clinic-backend:latest
+
+Push the image:
+docker push alexbalak/smart-clinic-backend:latest
