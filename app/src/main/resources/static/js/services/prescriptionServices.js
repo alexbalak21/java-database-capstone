@@ -6,9 +6,6 @@ export async function savePrescription(prescription, token) {
   try {
     const response = await authorizedFetch(`${PRESCRITION_API}`, {
       method: "POST",
-      headers: {
-        "Content-type": "application/json"
-      },
       body: JSON.stringify(prescription)
     });
     const result = await response.json();
