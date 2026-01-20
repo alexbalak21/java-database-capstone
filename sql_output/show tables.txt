@@ -1,0 +1,6 @@
+Tables_in_springboot_db
+admin
+appointment
+doctor
+doctor_available_times
+patient

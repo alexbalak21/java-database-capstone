@@ -17,6 +17,12 @@ Content-Type: application/json
 @adminToken = {{AdminLogin.response.body.token}}
 
 
+### GET ALL DOCTORS REQUEST ###
+GET {{baseUrl}}/doctor
+Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+
 ### PATIENT REGISTRE REQUEST ###
 POST {{baseUrl}}/patient 
 Content-Type: application/json
@@ -36,7 +42,7 @@ curl -X POST http://localhost:8100/patient -H "Content-Type: application/json" -
 
 
 ### PATIENT LOGIN REQUEST ###
-POST /patient/login
+POST {{baseUrl}}/patient/login
 Content-Type: application/json
 
 {
@@ -50,7 +56,8 @@ curl -X POST http://localhost:8100/patient/login -H "Content-Type: application/j
 
 
 ### PATIENT LOGIN WITH APPOINTMENTS ###
-POST /patient/login
+# @name PatientLogin
+POST {{baseUrl}}/patient/login
 Content-Type: application/json
 
 {
@@ -58,17 +65,20 @@ Content-Type: application/json
     "password": "passJane1"
 }
 
+@token = {{PatientLogin.response.body.token}}
+
 
 
 ### GET PATIENT APPOINTMENTS REQUEST ###
 GET {{baseUrl}}/patient/appointments?id=1
 Accept: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqYW5lLmRvZUBleGFtcGxlLmNvbSIsImlhdCI6MTc2ODg1NjA4MCwiZXhwIjoxNzY5NDYwODgwfQ.3UM5ytBriZGZ5FJkkUcuogWSJ3o33-fveC32y--bLY4
+Authorization: Bearer {{token}}
+
 
 ### CURL COMMAND ###
 curl -X GET "http://localhost:8100/patient/appointments?id=1" \
   -H "Accept: application/json" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqYW5lLmRvZUBleGFtcGxlLmNvbSIsImlhdCI6MTc2ODg1NjA4MCwiZXhwIjoxNzY5NDYwODgwfQ.3UM5ytBriZGZ5FJkkUcuogWSJ3o33-fveC32y--bLY4"
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqYW5lLmRvZUBleGFtcGxlLmNvbSIsImlhdCI6MTc2ODkxNDM4NCwiZXhwIjoxNzY5NTE5MTg0fQ.XjggyilypM4iHKDdJefzFZ3Wrl9Fl-Qkv3DIoN2l2nk"
 
 
 ### GET DOCTOR FILTER BY SPECIALTY & TIME REQUEST ###
@@ -79,6 +89,6 @@ Authorization: Bearer {{adminToken}}
 
 
 ### GET DOCTOR FILTER BY SPECIALTY & TIME CURL COMMAND ###
-GET {{baseUrl}}/doctor/filter?time=AM&specialty=any
+GET {{baseUrl}}/doctor/filter?time=AM&specialty=Cardiologist
 Accept: application/json
 Authorization: Bearer {{adminToken}}
