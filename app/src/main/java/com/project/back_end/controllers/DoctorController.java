@@ -193,8 +193,15 @@ public class DoctorController {
 			@RequestParam(required = false) String name,
 			@RequestParam(required = false) String time,
 			@RequestParam(required = false) String specialty) {
+		// Treat "any" as no filter for specialty
+		if ("any".equalsIgnoreCase(specialty)) {
+			specialty = null;
+		}
+		// Treat "any" as no filter for time
+		if ("any".equalsIgnoreCase(time)) {
+			time = null;
+		}
 		Map<String, Object> response = service.filterDoctor(name, specialty, time);
 		return ResponseEntity.ok(response);
 	}
-
 }

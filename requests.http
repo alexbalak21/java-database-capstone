@@ -1,5 +1,24 @@
+@baseUrl = http://localhost:8100
+@token = ""
+@adminToken = ""
+
+
+
+#### LOGIN AS ADMIN TO GET TOKEN ####
+# @name AdminLogin
+POST {{baseUrl}}/admin
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "admin@1234"
+}
+
+@adminToken = {{AdminLogin.response.body.token}}
+
+
 ### PATIENT REGISTRE REQUEST ###
-POST http://localhost:8100/patient 
+POST {{baseUrl}}/patient 
 Content-Type: application/json
 
 {
@@ -17,7 +36,7 @@ curl -X POST http://localhost:8100/patient -H "Content-Type: application/json" -
 
 
 ### PATIENT LOGIN REQUEST ###
-POST http://localhost:8100/patient/login
+POST /patient/login
 Content-Type: application/json
 
 {
@@ -31,7 +50,7 @@ curl -X POST http://localhost:8100/patient/login -H "Content-Type: application/j
 
 
 ### PATIENT LOGIN WITH APPOINTMENTS ###
-POST http://localhost:8100/patient/login
+POST /patient/login
 Content-Type: application/json
 
 {
@@ -42,7 +61,7 @@ Content-Type: application/json
 
 
 ### GET PATIENT APPOINTMENTS REQUEST ###
-GET http://localhost:8100/patient/appointments?id=1
+GET {{baseUrl}}/patient/appointments?id=1
 Accept: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqYW5lLmRvZUBleGFtcGxlLmNvbSIsImlhdCI6MTc2ODg1NjA4MCwiZXhwIjoxNzY5NDYwODgwfQ.3UM5ytBriZGZ5FJkkUcuogWSJ3o33-fveC32y--bLY4
 
@@ -54,5 +73,12 @@ curl -X GET "http://localhost:8100/patient/appointments?id=1" \
 
 ### GET DOCTOR FILTER BY SPECIALTY & TIME REQUEST ###
 ### NEEDS TO BE ADMIN AUTHORIZED ###
-GET http://localhost:8100/doctor/filter?specialty=Cardiology&availableTime=2024-07-10T10:00
+GET {{baseUrl}}/doctor/filter?specialty=any&availableTime=2024-07-10T10:00
 Accept: application/json
+Authorization: Bearer {{adminToken}}
+
+
+### GET DOCTOR FILTER BY SPECIALTY & TIME CURL COMMAND ###
+GET {{baseUrl}}/doctor/filter?time=AM&specialty=any
+Accept: application/json
+Authorization: Bearer {{adminToken}}
