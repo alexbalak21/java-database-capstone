@@ -12,23 +12,33 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.Optional;
 import javax.crypto.SecretKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+/**
+ * Service for managing JWT token generation and validation.
+ * 
+ * Configuration:
+ * - JWT Secret: Loaded from application.properties via ${jwt.secret} property.
+ *   Must be at least 32 characters for HMAC-SHA algorithms.
+ * - JWT Expiration: Loaded from ${jwt.expiration} property (default: 7 days in milliseconds).
+ * 
+ * The secret is used to sign tokens during generation and to verify token authenticity
+ * during validation. All tokens are signed using HMAC-SHA with the configured secret.
+ */
 @Component
 public class TokenService {
 
 	private static final Logger log = LoggerFactory.getLogger(TokenService.class);
 
 	@Value("${jwt.secret}")
-	private String jwtSecret;
+	private String jwtSecret; // JWT secret key loaded from application properties, used for signing and verifying tokens
 
 	@Value("${jwt.expiration:604800000}") // 7 days default
-	private long jwtExpiration;
+	private long jwtExpiration; // Token expiration time in milliseconds
 
 	private final AdminRepository adminRepository;
 	private final DoctorRepository doctorRepository;
@@ -42,10 +52,32 @@ public class TokenService {
 		this.patientRepository = patientRepository;
 	}
 
+	/**
+	 * Derives the HMAC-SHA signing key from the configured JWT secret.
+	 * 
+	 * This method converts the jwtSecret string into a SecretKey that can be used
+	 * by the JWT library to sign tokens during generation and verify signatures
+	 * during validation. The secret must be at least 32 characters to meet HMAC-SHA
+	 * security requirements.
+	 * 
+	 * @return SecretKey derived from the configured JWT secret
+	 */
 	private SecretKey getSigningKey() {
 		return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
 	}
 
+	/**
+	 * Generates a JWT token for the given identifier.
+	 * 
+	 * The token is signed using HMAC-SHA with the configured secret (via getSigningKey()).
+	 * The token includes:
+	 * - Subject: The provided identifier (typically email or username)
+	 * - Issued At: Current timestamp
+	 * - Expiration: Current time + configured expiration duration
+	 * 
+	 * @param identifier The user's email or username to encode in the token
+	 * @return A signed JWT token string
+	 */
 	public String generateToken(String identifier) {
 		return Jwts.builder()
 				.subject(identifier)
