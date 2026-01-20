@@ -66,6 +66,10 @@ public class SecurityConfig {
                         // Public static pages for patient login and post-login landing
                         .requestMatchers("/pages/patientDashboard.html").permitAll()
                         .requestMatchers("/pages/loggedPatientDashboard.html").permitAll()
+                        .requestMatchers("/pages/addPrescription.html").permitAll()
+                        .requestMatchers("/pages/patientRecord.html").permitAll()
+                        .requestMatchers("/pages/patientAppointments.html").permitAll()
+                        .requestMatchers("/pages/updateAppointment.html").permitAll()
                         
                         // Admin endpoints (require ADMIN role)
                         .requestMatchers(HttpMethod.GET, "/admin/**").hasRole("ADMIN")
